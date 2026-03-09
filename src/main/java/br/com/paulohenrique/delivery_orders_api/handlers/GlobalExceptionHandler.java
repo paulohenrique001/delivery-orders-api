@@ -1,6 +1,7 @@
 package br.com.paulohenrique.delivery_orders_api.handlers;
 
 import br.com.paulohenrique.delivery_orders_api.dto.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,11 +11,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGenericError(Exception exception) {
+        log.error("Erro interno inesperado", exception);
         return new ErrorResponse("Erro interno do servidor");
     }
 
