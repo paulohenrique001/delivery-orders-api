@@ -1,0 +1,39 @@
+server:
+  port: ${SERVER_PORT}
+  servlet:
+    context-path: /v1
+
+spring:
+  application:
+    name: delivery-orders-api
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: 2s
+      password: ${REDIS_PASSWORD}
+  cache:
+    type: redis
+    redis:
+      key-prefix: "delivery-orders::"
+      time-to-live: 300s
+      cache-null-values: false
+  security:
+    user:
+      name: ${SECURITY_NAME}
+      password: ${SECURITY_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

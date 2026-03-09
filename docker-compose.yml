@@ -1,0 +1,16 @@
+name: delivery-orders
+services:
+  redis-server:
+    image: redis:7.4-alpine
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}" ]
+    restart: unless-stopped
+    container_name: delivery-orders-redis-server
+
+  postgres-server:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    container_name: delivery-orders-postgres-server
