@@ -1,4 +1,4 @@
-package br.com.paulohenrique.delivery_orders_api.dto;
+package br.com.paulohenrique.delivery_orders_api.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

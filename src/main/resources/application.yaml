@@ -37,3 +37,4 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+  default-flat-param-object: true

@@ -1,4 +1,4 @@
-package br.com.paulohenrique.delivery_orders_api.dto;
+package br.com.paulohenrique.delivery_orders_api.dto.response;
 
 import br.com.paulohenrique.delivery_orders_api.domain.model.OrderStatus;
 
