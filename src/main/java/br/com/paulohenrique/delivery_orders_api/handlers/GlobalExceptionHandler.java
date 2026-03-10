@@ -17,21 +17,21 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
     public ErrorResponse handleGenericError(Exception exception) {
         log.error("Erro interno inesperado", exception);
         return new ErrorResponse("Erro interno do servidor");
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
     public ErrorResponse handleUnreadableMessage(HttpMessageNotReadableException exception) {
         return new ErrorResponse("Corpo da requisição inválido ou malformado");
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleValidationErrors(MethodArgumentNotValidException methodArgumentNotValidException) {
         List<String> errors = methodArgumentNotValidException.getBindingResult()
                 .getFieldErrors()
@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("Erro de validação", errors);
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ErrorResponse handleValidationErrors(MethodArgumentTypeMismatchException exception) {
         String error = String.format("O parâmetro '%s' recebeu o valor '%s', que é inválido",
                 exception.getName(),
@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("Erro de tipo de argumento", List.of(error));
     }
 
-    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
     public ErrorResponse handleNotFound(NotFoundException exception) {
         return new ErrorResponse(exception.getMessage());
     }
