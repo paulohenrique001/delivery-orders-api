@@ -23,7 +23,7 @@ spring:
   cache:
     type: redis
     redis:
-      key-prefix: "delivery-orders::"
+      key-prefix: "dop::" # delivery-orders-api
       time-to-live: 300s
       cache-null-values: false
   application:

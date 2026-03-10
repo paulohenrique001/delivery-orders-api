@@ -69,7 +69,7 @@ public class OrderController {
             @PathVariable
             Long id
     ) {
-        Order order = orderService.findById(id);
+        Order order = orderService.findByIdCached(id);
         return orderMapper.toResponse(order);
     }
 
