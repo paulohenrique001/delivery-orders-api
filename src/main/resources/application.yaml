@@ -1,7 +1,11 @@
 app:
   jwt:
     secret: ${JWT_SECRET}
-    expiration: 3600 # 1h
+    issuer: ${spring.application.name}
+    expiration: 1h
+  security:
+    username: ${SECURITY_NAME}
+    password: ${SECURITY_PASSWORD}
   rate-limit:
     capacity: 100
     refill-minutes: 1
@@ -31,10 +35,6 @@ spring:
       cache-null-values: false
   application:
     name: delivery-orders-api
-  security:
-    user:
-      name: ${SECURITY_NAME}
-      password: ${SECURITY_PASSWORD}
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
     username: ${POSTGRES_USER}

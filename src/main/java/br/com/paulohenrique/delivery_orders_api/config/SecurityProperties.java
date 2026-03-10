@@ -4,13 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.time.Duration;
-
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "app.jwt")
-public class JwtProperties {
-    private String secret;
-    private String issuer;
-    private Duration expiration;
+@ConfigurationProperties(prefix = "app.security")
+public class SecurityProperties {
+    private String username;
+    private String password;
 }

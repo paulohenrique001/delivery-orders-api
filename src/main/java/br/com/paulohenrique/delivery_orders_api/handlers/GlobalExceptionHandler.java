@@ -6,6 +6,7 @@ import br.com.paulohenrique.delivery_orders_api.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,21 +20,27 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ErrorResponse exceptionHandler(BadCredentialsException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNoResourceFound(NoResourceFoundException exception) {
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ErrorResponse exceptionHandler(NoResourceFoundException ignored) {
         return new ErrorResponse("Recurso não encontrado");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ErrorResponse handleUnreadableMessage(HttpMessageNotReadableException exception) {
+    public ErrorResponse exceptionHandler(HttpMessageNotReadableException ignored) {
         return new ErrorResponse("Corpo da requisição inválido ou malformado");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleValidationErrors(MethodArgumentNotValidException exception) {
+    public ErrorResponse exceptionHandler(MethodArgumentNotValidException exception) {
         List<String> errors = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -45,7 +52,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ErrorResponse handleValidationErrors(MethodArgumentTypeMismatchException exception) {
+    public ErrorResponse exceptionHandler(MethodArgumentTypeMismatchException exception) {
         String error = String.format("O parâmetro '%s' recebeu o valor '%s', que é inválido",
                 exception.getName(),
                 exception.getValue()
@@ -56,20 +63,20 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ErrorResponse handleGenericError(Exception exception) {
+    public ErrorResponse exceptionHandler(Exception exception) {
         log.error("Erro interno inesperado", exception);
         return new ErrorResponse("Erro interno do servidor");
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public ErrorResponse handleNotFound(NotFoundException exception) {
+    public ErrorResponse exceptionHandler(NotFoundException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
     @ExceptionHandler(UnprocessableContentException.class)
-    public ErrorResponse handleNotFound(UnprocessableContentException exception) {
+    public ErrorResponse exceptionHandler(UnprocessableContentException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }
