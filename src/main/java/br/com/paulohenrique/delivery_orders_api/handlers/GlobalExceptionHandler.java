@@ -12,12 +12,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNoResourceFound(NoResourceFoundException exception) {
+        return new ErrorResponse("Recurso não encontrado");
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ErrorResponse handleUnreadableMessage(HttpMessageNotReadableException exception) {
@@ -26,8 +33,8 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleValidationErrors(MethodArgumentNotValidException methodArgumentNotValidException) {
-        List<String> errors = methodArgumentNotValidException.getBindingResult()
+    public ErrorResponse handleValidationErrors(MethodArgumentNotValidException exception) {
+        List<String> errors = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(FieldError::getDefaultMessage)

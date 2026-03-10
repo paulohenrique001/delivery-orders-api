@@ -1,11 +1,15 @@
+app:
+  rate-limit:
+    capacity: 100
+    refill-minutes: 1
+
 server:
   port: ${SERVER_PORT}
   servlet:
     context-path: /v1
+  forward-headers-strategy: native
 
 spring:
-  application:
-    name: delivery-orders-api
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,6 +26,8 @@ spring:
       key-prefix: "delivery-orders::"
       time-to-live: 300s
       cache-null-values: false
+  application:
+    name: delivery-orders-api
   security:
     user:
       name: ${SECURITY_NAME}
