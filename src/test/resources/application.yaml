@@ -1,0 +1,49 @@
+app:
+  jwt:
+    secret: ekv9dAeg4QptaTyKmgJ8VreMLTvEkO2DpgDhVk8Do7Q
+    issuer: ${spring.application.name}
+    expiration: 1h
+  security:
+    username: admin
+    password: admin
+  rate-limit:
+    capacity: 100
+    refill-minutes: 1
+
+server:
+  port: 0
+  servlet:
+    context-path: /v1
+  forward-headers-strategy: native
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  data:
+    redis:
+      host: tc-overridden
+      port: 6379
+      timeout: 2s
+      password: tc-overridden
+  cache:
+    type: redis
+    redis:
+      key-prefix: "dop::"
+      time-to-live: 300s
+      cache-null-values: false
+  application:
+    name: delivery-orders-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tc-overridden
+    username: tc-overridden
+    password: tc-overridden
+    driver-class-name: org.postgresql.Driver
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+  default-flat-param-object: true
