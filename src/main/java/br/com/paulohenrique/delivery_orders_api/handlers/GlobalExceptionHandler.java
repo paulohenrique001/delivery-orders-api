@@ -1,6 +1,7 @@
 package br.com.paulohenrique.delivery_orders_api.handlers;
 
-import br.com.paulohenrique.delivery_orders_api.domain.exception.NotFoundException;
+import br.com.paulohenrique.delivery_orders_api.domain.exception.base.NotFoundException;
+import br.com.paulohenrique.delivery_orders_api.domain.exception.base.UnprocessableContentException;
 import br.com.paulohenrique.delivery_orders_api.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,6 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ErrorResponse handleGenericError(Exception exception) {
-        log.error("Erro interno inesperado", exception);
-        return new ErrorResponse("Erro interno do servidor");
-    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ErrorResponse handleUnreadableMessage(HttpMessageNotReadableException exception) {
@@ -53,9 +47,22 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("Erro de tipo de argumento", List.of(error));
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ErrorResponse handleGenericError(Exception exception) {
+        log.error("Erro interno inesperado", exception);
+        return new ErrorResponse("Erro interno do servidor");
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public ErrorResponse handleNotFound(NotFoundException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
+    @ExceptionHandler(UnprocessableContentException.class)
+    public ErrorResponse handleNotFound(UnprocessableContentException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }

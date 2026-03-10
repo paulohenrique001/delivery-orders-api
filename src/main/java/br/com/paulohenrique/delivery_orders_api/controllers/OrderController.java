@@ -5,15 +5,16 @@ import br.com.paulohenrique.delivery_orders_api.domain.model.OrderStatus;
 import br.com.paulohenrique.delivery_orders_api.dto.PageResponse;
 import br.com.paulohenrique.delivery_orders_api.dto.mapper.OrderMapper;
 import br.com.paulohenrique.delivery_orders_api.dto.request.CreateOrderRequest;
+import br.com.paulohenrique.delivery_orders_api.dto.request.UpdateStatusOrderRequest;
 import br.com.paulohenrique.delivery_orders_api.dto.response.OrderResponse;
 import br.com.paulohenrique.delivery_orders_api.services.OrderService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -28,7 +29,7 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponse create(
-            @Validated
+            @Valid
             @RequestBody
             CreateOrderRequest createOrderRequest
     ) {
@@ -65,9 +66,23 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public OrderResponse findById(
-            @PathVariable Long id
+            @PathVariable
+            Long id
     ) {
         Order order = orderService.findById(id);
+        return orderMapper.toResponse(order);
+    }
+
+    @PatchMapping("/{id}/status")
+    public OrderResponse updateStatus(
+            @PathVariable
+            Long id,
+            @Valid
+            @RequestBody
+            UpdateStatusOrderRequest updateStatusOrderRequest
+
+    ) {
+        Order order = orderService.updateStatus(id, updateStatusOrderRequest.status());
         return orderMapper.toResponse(order);
     }
 }

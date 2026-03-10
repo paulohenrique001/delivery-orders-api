@@ -1,6 +1,6 @@
 package br.com.paulohenrique.delivery_orders_api.services;
 
-import br.com.paulohenrique.delivery_orders_api.domain.exception.NotFoundException;
+import br.com.paulohenrique.delivery_orders_api.domain.exception.base.NotFoundException;
 import br.com.paulohenrique.delivery_orders_api.domain.model.Order;
 import br.com.paulohenrique.delivery_orders_api.domain.model.OrderStatus;
 import br.com.paulohenrique.delivery_orders_api.infrastructure.persistence.OrderSpecification;
@@ -45,5 +45,13 @@ public class OrderService {
     public Order findById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+    }
+
+    @Transactional
+    public Order updateStatus(Long id, OrderStatus status) {
+        Order order = findById(id);
+        order.updateStatus(status);
+
+        return orderRepository.save(order);
     }
 }

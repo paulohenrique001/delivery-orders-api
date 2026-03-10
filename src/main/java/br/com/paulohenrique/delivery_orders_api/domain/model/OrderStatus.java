@@ -5,5 +5,14 @@ public enum OrderStatus {
     PROCESSING,
     SHIPPED,
     DELIVERED,
-    CANCELED
+    CANCELED;
+
+    public boolean canChangeTo(OrderStatus nextOrderStatus) {
+        return switch (this) {
+            case CREATED -> nextOrderStatus == PROCESSING || nextOrderStatus == CANCELED;
+            case PROCESSING -> nextOrderStatus == SHIPPED || nextOrderStatus == CANCELED;
+            case SHIPPED -> nextOrderStatus == DELIVERED;
+            default -> false;
+        };
+    }
 }

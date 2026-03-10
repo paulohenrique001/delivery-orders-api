@@ -1,5 +1,6 @@
 package br.com.paulohenrique.delivery_orders_api.domain.model;
 
+import br.com.paulohenrique.delivery_orders_api.domain.exception.business.InvalidStatusChangeException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,5 +44,13 @@ public class Order {
         order.status = OrderStatus.CREATED;
 
         return order;
+    }
+
+    public void updateStatus(OrderStatus next) {
+        if (!status.canChangeTo(next)) {
+            throw new InvalidStatusChangeException(status, next);
+        }
+
+        this.status = next;
     }
 }
