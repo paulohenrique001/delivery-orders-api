@@ -7,6 +7,10 @@ public enum OrderStatus {
     DELIVERED,
     CANCELED;
 
+    public boolean isDelivered() {
+        return this.equals(DELIVERED);
+    }
+
     public boolean canChangeTo(OrderStatus nextOrderStatus) {
         return switch (this) {
             case CREATED -> nextOrderStatus == PROCESSING || nextOrderStatus == CANCELED;

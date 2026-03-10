@@ -54,4 +54,12 @@ public class OrderService {
 
         return orderRepository.save(order);
     }
+
+    @Transactional
+    public void cancel(Long id) {
+        Order order = findById(id);
+        order.cancel();
+
+        orderRepository.save(order);
+    }
 }

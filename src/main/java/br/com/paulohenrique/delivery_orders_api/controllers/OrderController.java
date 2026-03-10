@@ -85,4 +85,13 @@ public class OrderController {
         Order order = orderService.updateStatus(id, updateStatusOrderRequest.status());
         return orderMapper.toResponse(order);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancel(
+            @PathVariable
+            Long id
+    ) {
+        orderService.cancel(id);
+    }
 }

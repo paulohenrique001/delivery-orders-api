@@ -1,6 +1,7 @@
 package br.com.paulohenrique.delivery_orders_api.domain.model;
 
 import br.com.paulohenrique.delivery_orders_api.domain.exception.business.InvalidStatusChangeException;
+import br.com.paulohenrique.delivery_orders_api.domain.exception.business.OrderCannotBeCanceledException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,5 +53,13 @@ public class Order {
         }
 
         this.status = next;
+    }
+
+    public void cancel() {
+        if (status.isDelivered()) {
+            throw new OrderCannotBeCanceledException();
+        }
+
+        this.status = OrderStatus.CANCELED;
     }
 }
