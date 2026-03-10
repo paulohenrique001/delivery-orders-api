@@ -3,6 +3,8 @@ package br.com.paulohenrique.delivery_orders_api.config;
 import br.com.paulohenrique.delivery_orders_api.filters.RateLimitFilter;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.BucketConfiguration;
+import io.github.bucket4j.distributed.ExpirationAfterWriteStrategy;
+import io.github.bucket4j.distributed.proxy.ClientSideConfig;
 import io.github.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -26,7 +28,15 @@ public class RateLimitConfig {
 
     @Bean
     public LettuceBasedProxyManager<byte[]> proxyManager(StatefulRedisConnection<byte[], byte[]> redisConnection) {
+        ClientSideConfig clientSideConfig = ClientSideConfig.getDefault()
+                .withExpirationAfterWriteStrategy(
+                        ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(
+                                Duration.ofMinutes(properties.getRefillMinutes())
+                        )
+                );
+
         return LettuceBasedProxyManager.builderFor(redisConnection)
+                .withClientSideConfig(clientSideConfig)
                 .build();
     }
 
