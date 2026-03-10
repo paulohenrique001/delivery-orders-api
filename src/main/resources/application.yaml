@@ -1,4 +1,7 @@
 app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: 3600 # 1h
   rate-limit:
     capacity: 100
     refill-minutes: 1
