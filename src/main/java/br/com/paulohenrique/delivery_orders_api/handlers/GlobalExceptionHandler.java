@@ -4,6 +4,7 @@ import br.com.paulohenrique.delivery_orders_api.domain.exception.base.NotFoundEx
 import br.com.paulohenrique.delivery_orders_api.domain.exception.base.UnprocessableContentException;
 import br.com.paulohenrique.delivery_orders_api.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ErrorResponse exceptionHandler(NoResourceFoundException ignored) {
         return new ErrorResponse("Recurso não encontrado");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ErrorResponse exceptionHandler(PropertyReferenceException exception) {
+        return new ErrorResponse("Nenhuma propriedade '%s' encontrada para o recurso".formatted(exception.getPropertyName()));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
