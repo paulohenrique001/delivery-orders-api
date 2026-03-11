@@ -12,6 +12,7 @@ public class TestcontainersConfig {
     @ServiceConnection(name = "redis")
     GenericContainer<?> redis() {
         return new GenericContainer<>("redis:7.4-alpine")
+                .withEnv("REDIS_PASSWORD", "password")
                 .withExposedPorts(6379);
     }
 
