@@ -70,6 +70,9 @@ Bucket4j com Redis aplicado por IP via filtro antes da autenticação.
 
 ## Testes
 Os testes de integração sobem PostgreSQL e Redis automaticamente via **Testcontainers**, é necessário ter o Docker em execução para que funcione corretamente.
+```bash
+./mvnw test
+```
 
 - **Unitários:** regras de negócio e transições de status
 - **Integração:** endpoints completos com banco e cache reais
