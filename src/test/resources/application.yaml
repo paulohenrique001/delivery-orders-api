@@ -44,7 +44,3 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
-  default-flat-param-object: true
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  override-with-generic-response: false
