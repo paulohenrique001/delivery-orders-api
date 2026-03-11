@@ -15,7 +15,6 @@ public class SwaggerConfig {
         return new OpenAPI().info(new Info()
                         .title("Delivery Orders API")
                         .description("API REST utilizando Java 17 e Spring Boot para gerenciamento de pedidos de entrega.")
-                        .version("v1")
                 ).addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
                         .addSecuritySchemes(

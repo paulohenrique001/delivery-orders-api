@@ -4,6 +4,7 @@ import br.com.paulohenrique.delivery_orders_api.filters.RateLimitFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +31,22 @@ public class SecurityConfig {
     private final RateLimitFilter rateLimitFilter;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    @Order(1)
+    SecurityFilterChain publicSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .securityMatcher("/auth/**", "/swagger-ui/**", "/v3/api-docs/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterAfter(rateLimitFilter, SecurityContextHolderFilter.class)
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .build();
+    }
+
+    @Bean
+    @Order(2)
+    SecurityFilterChain protectedSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
@@ -37,8 +54,6 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(rateLimitFilter, BearerTokenAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/orders", "/orders/**").permitAll()
                         .anyRequest().authenticated()
                 )

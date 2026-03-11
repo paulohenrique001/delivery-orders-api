@@ -12,8 +12,6 @@ app:
 
 server:
   port: 0
-  servlet:
-    context-path: /v1
   forward-headers-strategy: native
 
 spring:

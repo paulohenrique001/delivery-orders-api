@@ -42,7 +42,7 @@ docker-compose.override.yml                        # Portas expostas para dev (c
 
 ### Acesso local
 
-- **API:** http://localhost:8080/v1
+- **API:** http://localhost:8080
 - **Swagger:** http://localhost:8080/swagger-ui/index.html
 
 ### Comandos
