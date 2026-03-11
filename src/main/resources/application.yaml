@@ -1,17 +1,17 @@
 app:
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:app-jwt-secret-default}
     issuer: ${spring.application.name}
     expiration: 1h
   security:
-    username: ${SECURITY_NAME}
-    password: ${SECURITY_PASSWORD}
+    username: ${SECURITY_NAME:admin}
+    password: ${SECURITY_PASSWORD:admin}
   rate-limit:
     capacity: 100
     refill-minutes: 1
 
 server:
-  port: ${SERVER_PORT}
+  port: ${SERVER_PORT:8080}
   forward-headers-strategy: native
 
 spring:
@@ -21,10 +21,10 @@ spring:
     open-in-view: false
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
       timeout: 2s
-      password: ${REDIS_PASSWORD}
+      password: ${REDIS_PASSWORD:redis}
   cache:
     type: redis
     redis:
@@ -34,16 +34,16 @@ spring:
   application:
     name: delivery-orders-api
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:db_delivery_orders}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
 springdoc:
   api-docs:
-    enabled: false
+    enabled: ${SWAGGER_ENABLED:false}
   swagger-ui:
-    enabled: false
+    enabled: ${SWAGGER_ENABLED:false}
     default-models-expand-depth: -1
   default-flat-param-object: true
   default-consumes-media-type: application/json

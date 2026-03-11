@@ -1,14 +1,41 @@
 name: delivery-orders
 services:
+  api-server:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    profiles: [ "stack" ]
+    depends_on:
+      redis-server:
+        condition: service_healthy
+      postgres-server:
+        condition: service_healthy
+    environment:
+      REDIS_HOST: redis-server
+      POSTGRES_HOST: postgres-server
+    container_name: delivery-orders-api-server
+
   redis-server:
     image: redis:7.4-alpine
     command: [ "redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}" ]
     restart: unless-stopped
+    profiles: [ "infra", "stack" ]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ]
+      timeout: 5s
+      retries: 5
+      interval: 10s
     container_name: delivery-orders-redis-server
 
   postgres-server:
     image: postgres:18-alpine
     restart: unless-stopped
+    profiles: [ "infra", "stack" ]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      timeout: 5s
+      retries: 5
+      interval: 10s
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"

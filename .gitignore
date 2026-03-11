@@ -33,7 +33,12 @@ build/
 .vscode/
 
 ### Environments ###
+.env
 .env.*
+!.env.model
 !.env.example
-!.env.local.model
+
 src/main/resources/application-*.yaml
+!src/main/resources/application-model.yaml
+
+src/test/resources/application-*.yaml
