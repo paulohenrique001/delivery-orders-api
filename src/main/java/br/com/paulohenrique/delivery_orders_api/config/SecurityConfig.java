@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Order(1)
     SecurityFilterChain publicSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .securityMatcher("/auth/**", "/swagger-ui/**", "/v3/api-docs/**")
+                .securityMatcher("/auth/**", "/actuator/**", "/swagger-ui/**", "/v3/api-docs/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -39,6 +39,14 @@ spring:
     password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:WARN}
+    br.com.paulohenrique: ${LOG_LEVEL_APP:INFO}
+  structured:
+    format:
+      console: ${LOG_FORMAT:}
+
 springdoc:
   api-docs:
     enabled: ${SWAGGER_ENABLED:false}
@@ -49,3 +57,12 @@ springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
   override-with-generic-response: false
+
+management:
+  endpoint:
+    health:
+      show-details: ${MANAGEMENT_HEALTH_DETAILS:never}
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_ENDPOINTS:info,health}
