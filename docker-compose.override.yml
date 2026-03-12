@@ -10,3 +10,8 @@ services:
   postgres-server:
     ports:
       - "${POSTGRES_PORT}:5432"
+
+  elasticmq-server:
+    ports:
+      - "${ELASTICMQ_PORT}:9324"
+      - "${ELASTICMQ_UI_PORT}:9325"

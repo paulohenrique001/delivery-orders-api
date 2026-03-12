@@ -10,9 +10,12 @@ services:
         condition: service_healthy
       postgres-server:
         condition: service_healthy
+      elasticmq-server:
+        condition: service_healthy
     environment:
       REDIS_HOST: redis-server
       POSTGRES_HOST: postgres-server
+      AWS_ENDPOINT: http://elasticmq-server:9324
     container_name: delivery-orders-api-server
 
   redis-server:
@@ -44,13 +47,15 @@ services:
 
   elasticmq-server:
     image: softwaremill/elasticmq-native:1.6.16
-    ports:
-      - "9324:9324"
-      - "9325:9325"
     restart: unless-stopped
     volumes:
       - ./elasticmq.conf:/opt/elasticmq.conf
+    profiles: [ "infra", "stack" ]
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -z localhost 9324 || exit 1" ]
+      timeout: 5s
+      retries: 5
+      interval: 10s
     environment:
       JAVA_OPTS: "-Dconfig.file=/opt/elasticmq.conf"
-    profiles: [ "infra" ]
     container_name: delivery-orders-elasticmq-server
