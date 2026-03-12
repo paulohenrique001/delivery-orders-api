@@ -1,4 +1,4 @@
-package br.com.paulohenrique.delivery_orders_api.dto;
+package br.com.paulohenrique.delivery_orders_api.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;

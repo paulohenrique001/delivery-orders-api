@@ -2,7 +2,7 @@ package br.com.paulohenrique.delivery_orders_api.controllers;
 
 import br.com.paulohenrique.delivery_orders_api.domain.model.Order;
 import br.com.paulohenrique.delivery_orders_api.domain.model.OrderStatus;
-import br.com.paulohenrique.delivery_orders_api.dto.PageResponse;
+import br.com.paulohenrique.delivery_orders_api.dto.response.PageResponse;
 import br.com.paulohenrique.delivery_orders_api.dto.mapper.OrderMapper;
 import br.com.paulohenrique.delivery_orders_api.dto.request.CreateOrderRequest;
 import br.com.paulohenrique.delivery_orders_api.dto.request.UpdateStatusOrderRequest;
