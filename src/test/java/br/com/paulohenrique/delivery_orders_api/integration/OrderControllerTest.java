@@ -6,6 +6,7 @@ import br.com.paulohenrique.delivery_orders_api.domain.model.OrderStatus;
 import br.com.paulohenrique.delivery_orders_api.dto.request.AuthRequest;
 import br.com.paulohenrique.delivery_orders_api.dto.request.CreateOrderRequest;
 import br.com.paulohenrique.delivery_orders_api.dto.request.UpdateStatusOrderRequest;
+import br.com.paulohenrique.delivery_orders_api.infrastructure.messaging.OrderConsumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +17,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
+    @MockitoSpyBean
+    private OrderConsumer orderConsumer;
+    @Autowired
+    private SqsAsyncClient sqsAsyncClient;
     @Autowired
     private SecurityProperties securityProperties;
 
@@ -94,6 +104,27 @@ public class OrderControllerTest {
                         .content(objectMapper.writeValueAsBytes(updateStatusOrderRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("PROCESSING"));
+    }
+
+    @Test
+    @DisplayName("Deve publicar evento quando alterar status para SHIPPED")
+    void updateStatus_toShipped_publishesEventToQueue() throws Exception {
+        Long orderId = createOrder();
+
+        mockMvc.perform(patch("/orders/{id}/status", orderId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .content(objectMapper.writeValueAsBytes(new UpdateStatusOrderRequest(OrderStatus.PROCESSING))))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(patch("/orders/{id}/status", orderId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .content(objectMapper.writeValueAsBytes(new UpdateStatusOrderRequest(OrderStatus.SHIPPED))))
+                .andExpect(status().isOk());
+
+        verify(orderConsumer, timeout(5000))
+                .onOrderShippedEvent(argThat(e -> e.orderId().equals(orderId) && e.status() == OrderStatus.SHIPPED));
     }
 
     @Test
