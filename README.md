@@ -63,6 +63,11 @@ Redis como cache de segundo nível para consultas, salvo no Redis com prefixo `d
 ### Rate Limiting
 Bucket4j com Redis aplicado por IP via filtro antes da autenticação.
 
+### Integração com Fila
+O projeto utiliza AWS SQS para publicação de eventos, atualmente existe a publicação de um evento apenas quando o status de um pedido é alterado para `SHIPPED`, e é consumido pelo próprio serviço.
+
+Para trabalhar em ambiente local, pode-se utilizar o **ElasticMQ** para emular o SQS, disponível no perfil da `infra` no docker.
+
 ### Tratamento de erros
 `GlobalExceptionHandler` centralizado que gera respostas padronizadas com `ErrorResponse` contendo mensagem e lista de detalhes para erros de validação ou demais informações.
 
