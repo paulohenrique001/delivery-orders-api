@@ -1,6 +1,6 @@
 app:
   jwt:
-    secret: ${JWT_SECRET:app-jwt-secret-default}
+    secret: ${JWT_SECRET:test-jwt-secret-with-at-least-256-bits-for-hs256-algorithm}
     issuer: ${spring.application.name}
     expiration: 1h
   security:
@@ -25,6 +25,15 @@ spring:
       port: ${REDIS_PORT:6379}
       timeout: 2s
       password: ${REDIS_PASSWORD:redis}
+  cloud:
+    aws:
+      sqs:
+        endpoint: ${AWS_ENDPOINT:http://localhost:9324}
+      region:
+        static: ${AWS_REGION:sa-east-1}
+      credentials:
+        access-key: ${AWS_ACCESS_KEY:admin}
+        secret-key: ${AWS_SECRET_KEY:admin}
   cache:
     type: redis
     redis:
@@ -52,6 +61,7 @@ springdoc:
     enabled: ${SWAGGER_ENABLED:false}
   swagger-ui:
     enabled: ${SWAGGER_ENABLED:false}
+    persist-authorization: true
     default-models-expand-depth: -1
   default-flat-param-object: true
   default-consumes-media-type: application/json

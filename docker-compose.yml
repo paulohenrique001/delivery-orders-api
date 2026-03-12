@@ -41,3 +41,16 @@ services:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     container_name: delivery-orders-postgres-server
+
+  elasticmq-server:
+    image: softwaremill/elasticmq-native:1.6.16
+    ports:
+      - "9324:9324"
+      - "9325:9325"
+    restart: unless-stopped
+    volumes:
+      - ./elasticmq.conf:/opt/elasticmq.conf
+    environment:
+      JAVA_OPTS: "-Dconfig.file=/opt/elasticmq.conf"
+    profiles: [ "infra" ]
+    container_name: delivery-orders-elasticmq-server

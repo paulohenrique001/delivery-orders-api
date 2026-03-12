@@ -8,6 +8,7 @@ import br.com.paulohenrique.delivery_orders_api.repositories.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,6 +21,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public Order create(String customerName, String address) {
@@ -55,8 +57,13 @@ public class OrderService {
     public Order updateStatus(Long id, OrderStatus status) {
         Order order = findById(id);
         order.updateStatus(status);
+        orderRepository.save(order);
 
-        return orderRepository.save(order);
+        if (status == OrderStatus.SHIPPED) {
+            applicationEventPublisher.publishEvent(order);
+        }
+
+        return order;
     }
 
     @CacheEvict(value = "orders", key = "#id")
